@@ -50,7 +50,7 @@ export class AuthService {
       throw new Error('Please verify your email');
     }
 
-    const token = signToken({ _id: user._id });
+    const token = signToken(user._id.toString());
     return {
       token,
       user: {
