@@ -5,8 +5,12 @@ import { AppointmentStatus } from '../types/enums';
 
 @ObjectType()
 export class Appointment {
-  @Field(() => ID,{name: '_id'})
-  readonly id!: string;
+  readonly _id!: any;
+
+  @Field(() => ID)
+  get id(): string{
+    return this._id.toString();
+  }
 
   @Field(() => User)
   @prop({ ref: () => User, required: true })

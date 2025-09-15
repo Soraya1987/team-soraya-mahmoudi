@@ -1,17 +1,23 @@
 // src/modules/user/entities/user.entity.ts
 import { ObjectType, Field, ID } from 'type-graphql';
 import { prop as Property, getModelForClass } from '@typegoose/typegoose';
+import { Types } from 'mongoose';
 
 @ObjectType()
 export class User {
+  readonly _id!: Types.ObjectId;
+  
   @Field(() => ID)
-  readonly id!: string;
+  get id(): string{
+    return this._id?.toString?.() ?? '';
+  }
+  
 
   @Field()
   @Property({ required: true, unique: true })
   email!: string;
 
-  @Field()
+ 
   @Property({ required: true })
   password!: string;
 

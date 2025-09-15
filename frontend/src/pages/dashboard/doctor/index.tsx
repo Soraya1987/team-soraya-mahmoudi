@@ -2,13 +2,13 @@ import { useAuth } from '@/contexts/useAuth';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { CONFIRM_APPOINTMENT } from '@/graphql/mutations/appointmentMutations';
 import { Navigate } from 'react-router-dom';
-import { RESET_PASSWORD_MUTATION } from '../../../graphql/mutations/authMutations';
 
 const GET_DOCTOR_APPOINTMENTS = gql`
 query GetDoctorAppointments {
   getAppointmentsForDoctor {
-    _id
+    id
     patient {
+      id
       email
     }
     date
@@ -23,7 +23,7 @@ export default function DoctorDashboard() {
   const { user } = useAuth();
 
   if (!user) return <Navigate to="/login" replace />;
-  if (!user._id) return <p>Loading user info...</p>;
+  if (!user.id) return <p>Loading user info...</p>;
 
   const { loading, error, data, refetch } = useQuery(GET_DOCTOR_APPOINTMENTS);
 
@@ -52,7 +52,7 @@ export default function DoctorDashboard() {
         ) : (
           <ul>
             {data.getAppointmentsForDoctor.map((appointment: any) => (
-              <li key={appointment._id} className="bg-white p-4 rounded-lg shadow-md mb-4">
+              <li key={appointment.id} className="bg-white p-4 rounded-lg shadow-md mb-4">
                 <p className="text-xl font-semibold">{appointment.patient.email}</p>
                 {/* <p className="text-gray-600">{appointment.specialty}</p> */}
                 <p className="text-gray-500">Date: {appointment.date}</p>
@@ -64,7 +64,7 @@ export default function DoctorDashboard() {
                   Status: {appointment.status === 'confirmed' ? 'Confirmed' : 'Pending'}
                 </p>
                 <button
-                  onClick={() => handleConfirmAppointment(appointment._id)}
+                  onClick={() => handleConfirmAppointment(appointment.id)}
                   className="mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
                 >
                   Confirm Appointment

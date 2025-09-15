@@ -2,10 +2,10 @@
 import { Resolver, Mutation, Arg, Ctx, Query } from 'type-graphql';
 import { Inject, Service } from 'typedi';
 import { AuthService } from '../services/auth.service';
-import { RegisterInput, LoginInput , ResetPasswordInput} from '../types/user.types';
-import { User } from '../entity/user.entity';
+import { RegisterInput, LoginInput , ResetPasswordInput, PublicUser, LoginResponse} from '../types/user.types';
+//import { User } from '../entity/user.entity';
 import { UserService } from '../services/user.service';
-import { LoginResponse } from '../types/user.types';
+
 @Resolver()
 @Service()
 export class UserResolver {
@@ -14,9 +14,18 @@ export class UserResolver {
     @Inject() private userService: UserService,
   ) {}
 
-  @Mutation(() => User)
-  async register(@Arg('data') data: RegisterInput) {
-    return this.authService.register(data.email, data.password,data.role);
+  @Mutation(() => PublicUser)
+  async register(@Arg('data') data: RegisterInput): Promise<PublicUser> {
+    const user = await this.authService.register(data.email, data.password, data.role);
+
+    return {
+      id: user.id,     
+      email: user.email,
+      role: user.role,
+      isVerified: user.isVerified,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
   }
 
   @Mutation(() => LoginResponse)
@@ -34,11 +43,21 @@ export class UserResolver {
     return this.authService.resetPassword(data.email, data.token, data.newPassword);
   }
 
-  @Query(() => User, { nullable: true })
-  async me(@Ctx() ctx: any) {
-    if (!ctx.user?._id) {
+  @Query(() => PublicUser, { nullable: true })
+  async me(@Ctx() ctx: any) : Promise<PublicUser | null>{
+    if (!ctx.user?.id) {
       throw new Error('Not authenticated');
     }
-    return this.userService.getUserById(ctx.user._id);
+    const user = await this.userService.getUserById(ctx.user.id);
+    if (!user) return null;
+
+    return {
+      id: user.id,      
+      email: user.email,
+      role: user.role,
+      isVerified: user.isVerified,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
   }
 }

@@ -19,7 +19,7 @@ mutation {
     password: "!Test1234",
     role: "patient"
   }) {
-    _id
+    id
     role
     isVerified
   }
@@ -28,7 +28,7 @@ mutation {
 {
   "data": {
     "register": {
-      "_id": "generated_id_here",
+      "id": "generated_id_here",
       "role": "patient",
       "isVerified": false
     }

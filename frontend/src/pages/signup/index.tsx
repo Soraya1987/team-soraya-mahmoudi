@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import PublicLayout from '@/layouts/PublicLayout';
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate} from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import { redirectToDashboard } from '@/utils/redirectToDashboard';
 import PasswordStrength from '@/components/PasswordStrength';
@@ -17,6 +17,7 @@ interface SignupFormValues {
 
 export default function Signup() {
   const { user, token } = useAuth();
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -48,13 +49,22 @@ export default function Signup() {
           },
         },
       });
-      const {_id, role, isVerified }= response.data?.register;
-      console.log('Signup Successful!');
-      console.log('User ID:', _id);
-      console.log('Role:', role);
-      console.log('Is Verified:', isVerified);
+      const userData= response.data?.register;
+      if (!userData) {
+        setStatus('Signup failed. No data returned.');
+        return;
+      }
+      console.log('Signup Successful!', userData);
+      console.log('User ID:', userData.id);
+      console.log('Role:', userData.role);
+      console.log('Is Verified:', userData.isVerified);
 
       setStatus('Signup successful! Please check your email to verify your account.');
+
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000);
+
     } catch (error: unknown) {
       console.error('Signup Error:', error);
       setStatus('Signup failed. Please try again.');

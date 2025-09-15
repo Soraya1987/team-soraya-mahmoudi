@@ -24,7 +24,7 @@ export class ResetPasswordInput {
 @ObjectType()
 export class PublicUser {
   @Field()
-  _id!: string;
+  id!: string;
 
   @Field()
   email!: string;

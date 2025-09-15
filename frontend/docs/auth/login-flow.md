@@ -82,7 +82,7 @@ It is written step-by-step so that the entire flow can be visualized easily, fro
 
 ### Step 6B — [BE] Successful Login
 - **File:** `core/utils/auth.ts`
-- `signToken({ id: user._id })` generates a JWT.
+- `signToken({ id: user.id })` generates a JWT.
   - Default expiration: **7 days** (`expiresIn: '7d'`)
 - Response:
   ```json
@@ -185,9 +185,9 @@ FE: Route guards → redirect /login
 
 Common Pitfalls & Solutions
 
-ID vs _id mismatch
+ID vs id mismatch
 
-GraphQL exposes id instead of _id. Always use id on the frontend.
+GraphQL exposes id instead of id. Always use id on the frontend.
 
 Logout not redirecting
 

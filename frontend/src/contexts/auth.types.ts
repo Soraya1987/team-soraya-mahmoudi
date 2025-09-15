@@ -1,8 +1,11 @@
 export interface User {
-  _id: string;
-  name: string;
+  id: string;
+  name?: string;
   email: string;
   role: 'patient' | 'doctor';
+  isVerified: boolean;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface AuthContextType {

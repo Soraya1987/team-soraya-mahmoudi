@@ -6,7 +6,9 @@ import { UserModel } from '../entity/user.entity';
 import { signToken } from '../../../core/utils/auth';
 import crypto from 'crypto';
 import { transporter } from '../../../core/utils/mailer';
-
+  
+const API_URL = process.env.API_URL || 'http://localhost:3000';   
+const APP_URL = process.env.APP_URL || 'http://localhost:5173'; 
 @Service()
 export class AuthService {
   async register(email: string, password: string, role: 'patient' | 'doctor') {
@@ -27,7 +29,7 @@ export class AuthService {
     await user.save();
 
     // Send verification email
-    const verificationLink = `http://localhost:3000/auth/verify-email?token=${verifyToken}&email=${email}`;
+    const verificationLink = `${API_URL}/auth/verify-email?token=${verifyToken}&email=${encodeURIComponent(email)}`;
 
     await transporter.sendMail({
       from: '"My App" <no-reply@myapp.com>',
@@ -54,7 +56,7 @@ export class AuthService {
     return {
       token,
       user: {
-        _id: user._id.toString(),
+        id: user._id.toString(),
         email: user.email,
         role: user.role,
         isVerified: user.isVerified,
@@ -78,7 +80,7 @@ export class AuthService {
     user.resetTokenExpiry = resetTokenExpiry;
     await user.save();
 
-    const resetLink = `http://localhost:5173/reset-password?token=${resetToken}&email=${email}`;
+    const resetLink = `${APP_URL}/reset-password?token=${resetToken}&email=${encodeURIComponent(email)}`;
 
     await transporter.sendMail({
       from: '"My App" <no-reply@myapp.com>',

@@ -3,17 +3,17 @@ import { gql } from '@apollo/client';
 export const GET_DOCTOR_APPOINTMENTS = gql`
   query GetDoctorAppointments {
     getAppointmentsForDoctor {
-      _id
+      id
       date
       time
       status
       notes
       doctor {
-        _id
+        id
         email
       }
       patient {
-        _id
+        id
         email
       }
     }
